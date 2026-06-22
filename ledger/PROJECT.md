@@ -27,6 +27,7 @@ See [decisions/LOG.md](decisions/LOG.md) for the full decision log.
 | Project | Relationship | Notes |
 |---------|-------------|-------|
 | Momentum | related-to | Both track health/habit data, potential data sharing |
+| Mealie | recipe-library | Self-hosted recipe manager (private fork) on the mini. FoodTracker pulls recipes + nutrition from Mealie's API and caches them for offline logging — likely replaces the Phase 6 recipe-builder scope. Integration design: ~/Dev/Mealie/ledger/subsystems/foodtracker-integration.md |
 
 ## Open Questions
 
