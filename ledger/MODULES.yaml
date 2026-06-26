@@ -39,7 +39,7 @@ modules:
       - OpenNutriTracker/lib/core/utils/hive_db_provider.dart
       - OpenNutriTracker/lib/core/data/dbo/*.dart
     known_gaps:
-      - "On migration failure it still marks the migration flag true, so the app avoids retrying and can fall back to an empty database."
+      - "On migration failure the catch path still marks the migration flag true outside the transaction, so the app avoids retrying and can fall back to an empty database; the in-transaction flag set is redundant and only persists on success."
     match_keywords: [data migration, hive to sqlite, local storage migration, encrypted mobile data]
 
   - id: foodtracker.database.intake-and-day-store
