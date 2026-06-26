@@ -4,6 +4,7 @@
 
 ## Status
 
+**Lane:** personal
 **Phase:** Stage 2 — Feature Development (Phase 6 next)
 **Last updated:** 2026-04-07
 
