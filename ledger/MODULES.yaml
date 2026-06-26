@@ -1,0 +1,360 @@
+project_shape:
+  scale: multi-subsystem
+  has_subsystem_layer: true
+  expected_modules: "14-18"
+  kind: product
+
+modules:
+  - id: foodtracker.database.local-persistence
+    project: FoodTracker
+    subsystem: Database
+    name: Local Persistence
+    capability: Stores food items, log entries, daily stats, recipes, user profile, and activities in the on-device database.
+    status: mature
+    approach: Uses drift over SQLite with typed tables and DAOs, FTS5 food search, schema migrations, and supporting indexes/triggers.
+    tech: [Flutter, drift, SQLite, sqlite3_flutter_libs]
+    io:
+      in: "Repository and DAO read/write requests for app state and nutrition records."
+      out: "Persisted rows, query results, reactive database access, and migrated schema state."
+    code_refs:
+      - OpenNutriTracker/lib/core/data/drift/app_database.dart
+      - OpenNutriTracker/lib/core/data/drift/tables/*.dart
+      - OpenNutriTracker/lib/core/data/drift/daos/*.dart
+    known_gaps: []
+    match_keywords: [drift, sqlite, mobile database, dao, fts5 search, schema migration]
+
+  - id: foodtracker.database.hive-to-drift-migration
+    project: FoodTracker
+    subsystem: Database
+    name: Hive To Drift Migration
+    capability: Migrates legacy encrypted Hive data into the current drift schema on first launch after upgrade.
+    status: working
+    approach: Opens old Hive boxes with the stored AES key, maps legacy DBOs into drift rows, and sets a migration-complete flag.
+    tech: [Flutter, Hive CE, drift, SQLite, uuid]
+    io:
+      in: "Legacy Hive boxes for config, user, intake, tracked day, and user activity plus the Hive encryption key."
+      out: "Equivalent rows in the drift database and a persisted migration flag."
+    code_refs:
+      - OpenNutriTracker/lib/core/data/drift/migration/hive_to_drift_migrator.dart
+      - OpenNutriTracker/lib/core/utils/hive_db_provider.dart
+      - OpenNutriTracker/lib/core/data/dbo/*.dart
+    known_gaps:
+      - "On migration failure it still marks the migration flag true, so the app avoids retrying and can fall back to an empty database."
+    match_keywords: [data migration, hive to sqlite, local storage migration, encrypted mobile data]
+
+  - id: foodtracker.database.intake-and-day-store
+    project: FoodTracker
+    subsystem: Database
+    name: Intake And Day Store
+    capability: Persists food logs, quick-add entries, recipe logs, favourites, recents, and daily rollup records.
+    status: working
+    approach: Coordinates drift DAOs through repositories that upsert food items, snapshot nutrition into log entries, and update daily stats.
+    tech: [Flutter, drift, SQLite]
+    io:
+      in: "Intake entities, recipe servings, quick-add macros, favourites toggles, and date-based queries."
+      out: "Stored food items and log entries, recent/favourite query results, and updated daily stats."
+    code_refs:
+      - OpenNutriTracker/lib/core/data/repository/intake_repository.dart
+      - OpenNutriTracker/lib/core/data/repository/tracked_day_repository.dart
+      - OpenNutriTracker/lib/core/data/drift/daos/log_entry_dao.dart
+      - OpenNutriTracker/lib/core/data/drift/daos/food_item_dao.dart
+      - OpenNutriTracker/lib/core/data/drift/daos/daily_stats_dao.dart
+    known_gaps:
+      - "Quick-add entries cannot be updated through the shared amount-edit path."
+    match_keywords: [food logging, nutrition snapshots, daily stats, favourites, recents, diary repository]
+
+  - id: foodtracker.database.recipe-store
+    project: FoodTracker
+    subsystem: Database
+    name: Recipe Store
+    capability: Stores user-created and mirrored recipes with ingredients, favourites, recents, and per-serving nutrition.
+    status: working
+    approach: Uses a recipe repository over drift DAOs, recomputing nutrition for editable recipes and preserving explicit nutrition for mirrored imports.
+    tech: [Flutter, drift, SQLite, uuid]
+    io:
+      in: "Recipe definitions, ingredient lists, Mealie-mirrored recipes, favourite toggles, and search queries."
+      out: "Persisted recipes with ordered ingredients and computed or explicit per-serving nutrition."
+    code_refs:
+      - OpenNutriTracker/lib/core/data/repository/recipe_repository.dart
+      - OpenNutriTracker/lib/core/data/drift/daos/recipe_dao.dart
+      - OpenNutriTracker/lib/core/domain/entity/recipe_entity.dart
+      - OpenNutriTracker/lib/core/domain/entity/recipe_ingredient_entity.dart
+    known_gaps: []
+    match_keywords: [recipe repository, meal planning, ingredient store, nutrition per serving, local recipes]
+
+  - id: foodtracker.database.data-portability
+    project: FoodTracker
+    subsystem: Database
+    name: Data Portability
+    capability: Exports and imports local nutrition data as ZIP archives containing JSON or CSV files.
+    status: working
+    approach: Serializes repository and DAO outputs into archive files and restores compatible payloads through repository and DAO insert paths.
+    tech: [Flutter, archive, file_picker, drift]
+    io:
+      in: "Current local database contents or a user-selected ZIP archive."
+      out: "ZIP exports with JSON or CSV payloads, or imported rows written into the local database."
+    code_refs:
+      - OpenNutriTracker/lib/features/settings/domain/usecase/export_data_usecase.dart
+      - OpenNutriTracker/lib/features/settings/domain/usecase/import_data_usecase.dart
+      - OpenNutriTracker/lib/features/settings/presentation/bloc/export_import_bloc.dart
+    known_gaps: []
+    match_keywords: [data export, data import, csv export, json backup, archive restore]
+
+  - id: foodtracker.core-domain.energy-and-macro-engine
+    project: FoodTracker
+    subsystem: Core Domain
+    name: Energy And Macro Engine
+    capability: Calculates TDEE-based calorie allowance, earned exercise calories, remaining calories, and macro targets.
+    status: working
+    approach: Implements pure calculation helpers and use cases for BMR, TDEE, PAL, calorie adjustments, and proportional or fixed macro allocation.
+    tech: [Flutter, Dart]
+    io:
+      in: "User profile data, activity calories, exercise multiplier, calorie adjustment, and macro preference overrides."
+      out: "Allowance totals, remaining calories, and macro target grams."
+    code_refs:
+      - OpenNutriTracker/lib/core/utils/calc/bmr_calc.dart
+      - OpenNutriTracker/lib/core/utils/calc/tdee_calc.dart
+      - OpenNutriTracker/lib/core/utils/calc/calorie_goal_calc.dart
+      - OpenNutriTracker/lib/core/utils/calc/macro_calc.dart
+      - OpenNutriTracker/lib/core/domain/usecase/get_kcal_goal_usecase.dart
+      - OpenNutriTracker/lib/core/domain/usecase/get_macro_goal_usecase.dart
+    known_gaps:
+      - "The profile area still contains BMI and nutritional-status logic that the audit docs recommend removing."
+    match_keywords: [tdee, calorie allowance, macro targets, metabolism calculator, nutrition goals]
+
+  - id: foodtracker.core-domain.day-rollup-engine
+    project: FoodTracker
+    subsystem: Core Domain
+    name: Day Rollup Engine
+    capability: Applies logical day boundaries, meal-slot inference, weekly aggregation, and daily-stat recomputation.
+    status: working
+    approach: Uses pure date and aggregation helpers plus a recompute use case that rolls log-entry snapshots into the materialised daily-stats table.
+    tech: [Flutter, Dart]
+    io:
+      in: "Timestamps, tracked-day records, intake snapshots, and activity totals."
+      out: "Logical dates, suggested meal slots, weekly summaries, and recomputed daily-stat values."
+    code_refs:
+      - OpenNutriTracker/lib/core/utils/calc/day_boundary_calc.dart
+      - OpenNutriTracker/lib/core/utils/calc/meal_slot_calc.dart
+      - OpenNutriTracker/lib/core/utils/calc/weekly_calc.dart
+      - OpenNutriTracker/lib/core/domain/usecase/recompute_day_usecase.dart
+    known_gaps: []
+    match_keywords: [day boundary, meal slot suggestion, weekly summary, daily rollup, recompute stats]
+
+  - id: foodtracker.core-domain.recipe-and-validation-rules
+    project: FoodTracker
+    subsystem: Core Domain
+    name: Recipe And Validation Rules
+    capability: Computes recipe nutrition from ingredients and validates calorie or macro consistency using Atwater-style checks.
+    status: working
+    approach: Uses pure helpers to sum per-100g ingredient nutrition, derive per-serving values, and flag suspicious label math.
+    tech: [Flutter, Dart]
+    io:
+      in: "Ingredient grams and per-100g macros plus reported calories and fibre values."
+      out: "Recipe nutrition totals, per-serving values, and validation status with deviation percentages."
+    code_refs:
+      - OpenNutriTracker/lib/core/utils/calc/recipe_calc.dart
+      - OpenNutriTracker/lib/core/utils/calc/nutrition_validator.dart
+      - OpenNutriTracker/lib/features/recipes/domain/usecase/resolve_ingredients_usecase.dart
+    known_gaps: []
+    match_keywords: [recipe nutrition, atwater validation, calorie consistency, ingredient resolution]
+
+  - id: foodtracker.today-dashboard.home-dashboard
+    project: FoodTracker
+    subsystem: Today Dashboard
+    name: Home Dashboard
+    capability: Presents the current day summary with calorie breakdown, macro progress, activity list, meal-grouped intakes, and HealthKit context.
+    status: working
+    approach: Uses Flutter screens and BLoCs backed by repositories and daily-stats reads, refreshing on app resume and showing materialised totals.
+    tech: [Flutter, flutter_bloc, provider]
+    io:
+      in: "Home load events, daily-stat queries, intake lists, user activities, HealthKit cache state, and Mantel sync triggers."
+      out: "Rendered dashboard sections, grouped meal cards, progress widgets, and user actions for edit or delete flows."
+    code_refs:
+      - OpenNutriTracker/lib/features/home/home_page.dart
+      - OpenNutriTracker/lib/features/home/presentation/bloc/home_bloc.dart
+      - OpenNutriTracker/lib/features/home/presentation/widgets/dashboard_widget.dart
+      - OpenNutriTracker/lib/core/presentation/main_screen.dart
+    known_gaps: []
+    match_keywords: [dashboard, calorie progress, meal groups, home screen, daily summary]
+
+  - id: foodtracker.today-dashboard.diary-history
+    project: FoodTracker
+    subsystem: Today Dashboard
+    name: Diary History
+    capability: Provides calendar-based browsing and detail views for past food and activity records.
+    status: working
+    approach: Uses dedicated diary, meal-detail, and activity-detail screens with Flutter BLoCs over repository queries by date and item id.
+    tech: [Flutter, flutter_bloc, table_calendar]
+    io:
+      in: "Selected dates, intake ids, activity ids, and navigation events."
+      out: "Historical diary views, per-item detail screens, and edit or delete actions."
+    code_refs:
+      - OpenNutriTracker/lib/features/diary/**/*.dart
+      - OpenNutriTracker/lib/features/meal_detail/**/*.dart
+      - OpenNutriTracker/lib/features/activity_detail/**/*.dart
+      - OpenNutriTracker/lib/features/edit_meal/**/*.dart
+    known_gaps:
+      - "The edit-meal screen still has a TODO to add base quantity and unit handling."
+    match_keywords: [food diary, calendar history, meal detail, activity detail, nutrition history]
+
+  - id: foodtracker.friction-foundations.food-search-and-log
+    project: FoodTracker
+    subsystem: Friction Foundations
+    name: Food Search And Log
+    capability: Lets the user search external food catalogs or local recents, choose an item, and log it into a meal slot.
+    status: working
+    approach: Combines Open Food Facts and FoodData Central HTTP data sources with BLoCs and add-meal screens, then saves selected items through the intake repository.
+    tech: [Flutter, flutter_bloc, http, Open Food Facts, FoodData Central]
+    io:
+      in: "Search strings, selected products, meal-slot choice, and serving amounts."
+      out: "Candidate food lists, chosen meal entities, and saved intake records."
+    code_refs:
+      - OpenNutriTracker/lib/features/add_meal/data/data_sources/off_data_source.dart
+      - OpenNutriTracker/lib/features/add_meal/data/data_sources/fdc_data_source.dart
+      - OpenNutriTracker/lib/features/add_meal/data/repository/products_repository.dart
+      - OpenNutriTracker/lib/features/add_meal/presentation/**/*.dart
+    known_gaps:
+      - "The Open Food Facts client still carries a TODO to lower its 20-second timeout."
+      - "Meal entity parsing still has TODOs around unit extraction and mg or g normalization."
+      - "FoodData Central constants still include a TODO to convert some labels into translation keys."
+    match_keywords: [food search, nutrition lookup, open food facts, fooddata central, meal logging]
+
+  - id: foodtracker.friction-foundations.barcode-capture
+    project: FoodTracker
+    subsystem: Friction Foundations
+    name: Barcode Capture
+    capability: Scans product barcodes and resolves them into food items for logging.
+    status: working
+    approach: Uses mobile_scanner for camera capture and an OFF barcode lookup flow surfaced through a scanner BLoC and screen.
+    tech: [Flutter, flutter_bloc, mobile_scanner, Open Food Facts]
+    io:
+      in: "Camera barcode scans and scanner events."
+      out: "Resolved product records or product-not-found or generic error states."
+    code_refs:
+      - OpenNutriTracker/lib/features/scanner/**/*.dart
+      - OpenNutriTracker/lib/features/add_meal/data/data_sources/off_data_source.dart
+      - OpenNutriTracker/lib/features/scanner/domain/usecase/search_product_by_barcode_usecase.dart
+    known_gaps: []
+    match_keywords: [barcode scanner, product lookup, camera nutrition scan, packaged food lookup]
+
+  - id: foodtracker.friction-foundations.quick-add-and-inline-editing
+    project: FoodTracker
+    subsystem: Friction Foundations
+    name: Quick Add And Inline Editing
+    capability: Supports fast manual calorie or macro entry and lightweight in-place intake editing from the home flow.
+    status: partial
+    approach: Uses a dedicated quick-add screen, meal-slot suggestion, repository shortcuts for quick-add entries, and an amount-edit dialog for existing logged foods.
+    tech: [Flutter, flutter_bloc]
+    io:
+      in: "Manual calorie or macro values, optional label text, selected meal slot, and edit requests for existing log items."
+      out: "Saved quick-add log entries, updated daily stats, and edited intake amounts for supported entries."
+    code_refs:
+      - OpenNutriTracker/lib/features/quick_add/presentation/quick_add_screen.dart
+      - OpenNutriTracker/lib/features/home/home_page.dart
+      - OpenNutriTracker/lib/core/presentation/widgets/edit_dialog.dart
+      - OpenNutriTracker/lib/core/data/repository/intake_repository.dart
+    known_gaps:
+      - "Quick-add entries are explicitly excluded from the shared amount-edit path."
+      - "The friction-foundations ledger doc calls for draft persistence, swipe-to-delete with undo, and richer favourites or recents behaviour that is not isolated as a dedicated module yet."
+    match_keywords: [quick add, manual calories, inline edit, meal slot shortcut, fast logging]
+
+  - id: foodtracker.friction-foundations.mantel-intake-sync
+    project: FoodTracker
+    subsystem: Friction Foundations
+    name: Mantel Intake Sync
+    capability: Pulls externally logged meals from Mantel into the local diary and optionally reacts to push notifications.
+    status: working
+    approach: Uses a one-way idempotent sync service over Mantel HTTP APIs, secure config storage, Firebase Messaging hooks, and local notification banners.
+    tech: [Flutter, Firebase Messaging, flutter_local_notifications, http]
+    io:
+      in: "Mantel base URL, actor, optional intake token, pending remote intakes, and FCM push events."
+      out: "Quick-add diary entries mirrored from Mantel, acknowledgement calls, and optional foreground notifications."
+    code_refs:
+      - OpenNutriTracker/lib/features/intake/data/mantel_sync_service.dart
+      - OpenNutriTracker/lib/features/intake/data/mantel_push_service.dart
+      - OpenNutriTracker/lib/features/intake/data/mantel_secure_storage.dart
+      - OpenNutriTracker/lib/core/utils/notification_service.dart
+    known_gaps:
+      - "Push registration is best-effort and quietly skips when Firebase or APNS is not configured."
+    match_keywords: [external meal sync, push-driven sync, diary mirror, idempotent intake import, firebase messaging]
+
+  - id: foodtracker.apple-health.active-calorie-sync
+    project: FoodTracker
+    subsystem: Apple Health
+    name: Active Calorie Sync
+    capability: Reads today's active calories from Apple Health and caches them for allowance calculations and dashboard display.
+    status: working
+    approach: Uses the health plugin through a data source and repository that request permission, read Active Energy Burned, and cache it in daily_stats.
+    tech: [Flutter, health, HealthKit, drift]
+    io:
+      in: "HealthKit permission state and today's active-energy readings."
+      out: "Cached active-calorie values with timestamps and repository accessors for the dashboard and allowance logic."
+    code_refs:
+      - OpenNutriTracker/lib/core/data/data_source/health_data_source.dart
+      - OpenNutriTracker/lib/core/data/repository/health_repository.dart
+      - OpenNutriTracker/lib/core/domain/usecase/get_health_usecase.dart
+      - OpenNutriTracker/lib/features/settings/presentation/health_debug_screen.dart
+    known_gaps: []
+    match_keywords: [apple health, healthkit, active calories, exercise allowance, wellness integration]
+
+  - id: foodtracker.claude-api-integration.label-photo-extraction
+    project: FoodTracker
+    subsystem: Claude API Integration
+    name: Label Photo Extraction
+    capability: Extracts nutrition-label data from a captured image, validates it, and saves the result as a reusable food item or logged intake.
+    status: working
+    approach: Uses image capture plus an OpenAI chat-completions vision call, then applies serving-size inference and Atwater-style validation before save flows.
+    tech: [Flutter, image_picker, http, OpenAI API, gpt-4o-mini]
+    io:
+      in: "Captured image bytes, MIME type, and the user's stored OpenAI API key."
+      out: "Structured nutrition-label fields, validation status, and saved local food items or intake entries."
+    code_refs:
+      - OpenNutriTracker/lib/features/label_scan/data/data_source/openai_data_source.dart
+      - OpenNutriTracker/lib/features/label_scan/domain/usecase/extract_nutrition_usecase.dart
+      - OpenNutriTracker/lib/features/label_scan/presentation/**/*.dart
+    known_gaps:
+      - "The ledger and some manual-test docs still describe this feature as Claude-based, but the implementation now uses OpenAI and an OpenAI API key."
+    match_keywords: [nutrition label OCR, vision extraction, food label parser, multimodal nutrition capture]
+
+  - id: foodtracker.claude-api-integration.llm-recipe-parser
+    project: FoodTracker
+    subsystem: Claude API Integration
+    name: LLM Recipe Parser
+    capability: Turns pasted recipe text or fetched recipe-page HTML into structured recipe ingredients and servings for local recipe creation.
+    status: working
+    approach: Sends prompts to Anthropic Claude Sonnet, resolves ingredient matches against the local food store, and lets the user repair unresolved ingredients in the UI.
+    tech: [Flutter, http, Anthropic Claude API, claude-sonnet-4-20250514]
+    io:
+      in: "Recipe text or URL-derived HTML plus the user's Claude API key."
+      out: "Structured recipe name, servings, resolved ingredient list, and saved local recipes."
+    code_refs:
+      - OpenNutriTracker/lib/features/recipes/data/data_source/claude_recipe_data_source.dart
+      - OpenNutriTracker/lib/features/recipes/data/data_source/url_fetcher.dart
+      - OpenNutriTracker/lib/features/recipes/domain/usecase/resolve_ingredients_usecase.dart
+      - OpenNutriTracker/lib/features/recipes/presentation/bloc/llm_recipe_bloc.dart
+      - OpenNutriTracker/lib/features/recipes/presentation/llm_recipe_screen.dart
+    known_gaps: []
+    match_keywords: [recipe parser, llm recipe extraction, ingredient normalization, recipe from url, claude integration]
+
+  - id: foodtracker.claude-api-integration.mealie-recipe-mirror
+    project: FoodTracker
+    subsystem: Claude API Integration
+    name: Mealie Recipe Mirror
+    capability: Mirrors recipes from a self-hosted Mealie instance into the local recipe store for offline logging.
+    status: partial
+    approach: Calls Mealie's REST API with a bearer token, maps recipe DTOs into local recipe entities, and upserts them as read-only mirrored recipes.
+    tech: [Flutter, http, Mealie API]
+    io:
+      in: "Mealie base URL, API token, paginated recipe summaries, and recipe-detail payloads."
+      out: "Local mirrored recipe rows with imported nutrition and ingredient lists."
+    code_refs:
+      - OpenNutriTracker/lib/features/recipes/data/data_source/mealie_data_source.dart
+      - OpenNutriTracker/lib/features/recipes/data/mealie_recipe_mapper.dart
+      - OpenNutriTracker/lib/features/recipes/data/mealie_sync_service.dart
+      - OpenNutriTracker/lib/features/recipes/data/mealie_secure_storage.dart
+      - OpenNutriTracker/lib/features/recipes/recipes_page.dart
+    known_gaps:
+      - "Sync does not prune recipes deleted in Mealie."
+      - "Sync always re-fetches the full recipe list rather than performing incremental updates."
+    match_keywords: [mealie sync, recipe mirror, cookbook integration, self-hosted recipes, offline recipe cache]
