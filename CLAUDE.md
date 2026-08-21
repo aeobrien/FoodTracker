@@ -65,6 +65,12 @@ flutter test
 # Run tests for a specific file
 flutter test test/path/to/test_file.dart
 
+# Run the checks that need a real Mantel listening. These live OUTSIDE test/
+# on purpose — they fail when nothing is running, and a suite that needs a
+# server to be green is one people learn to ignore. `flutter test` never
+# touches them; run them deliberately, pointed at whichever Mantel you mean.
+MANTEL=http://127.0.0.1:8790 flutter test test_live/
+
 # Open in Xcode (for signing, capabilities, native code)
 open ios/Runner.xcworkspace
 
