@@ -71,6 +71,12 @@ flutter test test/path/to/test_file.dart
 # touches them; run them deliberately, pointed at whichever Mantel you mean.
 MANTEL=http://127.0.0.1:8790 flutter test test_live/
 
+# Point them at a THROWAWAY Mantel on a copy of the database — they write real
+# rows to a real person's real day. And note that one of them
+# (a_stuck_row_gets_settled_test.dart) makes the house work out a sentence,
+# which is a model call and costs a fraction of a penny each run. That is the
+# reason it lives here rather than in the suite that runs on every change.
+
 # Open in Xcode (for signing, capabilities, native code)
 open ios/Runner.xcworkspace
 
