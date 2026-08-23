@@ -1,5 +1,22 @@
 # FoodTracker — Project Conventions
 
+## What "done" means here
+
+**Aidan, 23 August 2026, asked whether a release was finished:**
+
+> "When you say 'tested', not by me. If it's not tested and approved by me,
+> it's not done."
+
+A passing suite is evidence, not the verdict. Nothing here is done until he has
+tested it and said so. When you finish building, the honest words are "built and
+tested, waiting on Aidan" — never "done", "complete" or "finished". Put what he
+has to do in front of him with `/walkthrough`, at the point where he would really
+use the thing, and leave it open until he has been through it.
+
+It applies backwards: anything reading as finished on the strength of a passing
+suite alone is waiting on him, whatever it says. The same rule is in
+`~/Dev/Mantel/ledger/PROJECT.md` and in the releases roadmap.
+
 ## Overview
 
 FoodTracker is a frictionless, personal calorie and macro tracker built on a fork of OpenNutriTracker (Flutter). It adds exercise-adjusted allowances (via Apple Health), LLM-assisted food label capture and recipe creation (via Claude API), quick-add estimates, and ADHD-friendly design throughout. Local-first, single-user, no subscriptions.
