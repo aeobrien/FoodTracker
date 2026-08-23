@@ -1,0 +1,23 @@
+{
+  "capture_finished_at_utc": "2026-08-23T01:36:44Z",
+  "capture_started_at_utc": "2026-08-23T01:36:41Z",
+  "captured_at_utc": "2026-08-23T01:36:41Z",
+  "captured_byte_estimate": 204476,
+  "captured_path_count": 29,
+  "consistency_retry_count": 0,
+  "excluded": [],
+  "github_hard_limit_bytes": 100000000,
+  "guardian_version": "2.0-sidecar",
+  "head_state": "symbolic",
+  "host": "aidans-laptop",
+  "racy_capture": false,
+  "repository_id": "FoodTracker-fa3bfd802998",
+  "schema_version": 1,
+  "snapshot_blob_threshold_bytes": 94371840,
+  "snapshot_consistency": "stable",
+  "source_branch": "servicemap/foodtracker-card",
+  "source_head_oid": "36a38bd7cc4e077aef7ce559b72100a36bd12b82",
+  "source_index_sha256": "69a3a2f7280e7a203394cd506d68cbc415732542f17d67fcc4305fafcc53f95d",
+  "source_path": "/Users/aidan/Dev/FoodTracker",
+  "upstream_observed": null
+}
