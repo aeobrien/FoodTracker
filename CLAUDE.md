@@ -175,15 +175,12 @@ cd ios && pod install --repo-update && cd ..
 
 11. **Don't regenerate `roadmap.md` without reading it first.** The planning project's
     `downstream/roadmap.md` is a generated file — `bin/roadmap.py generate` in the `plan` skill
-    rewrites it from the technical plan. It has been hand-edited twice since it was generated,
-    and both edits would be lost: Aidan's rule about what "finished" means (23 August 2026, the
-    section that overrides every exit criterion below it) and release 7's reworded exit criterion
-    (24 August 2026). Regenerating is allowed; losing those two is not. Read them, decide where
-    they should live, then regenerate. A warning to the same effect sits at the top of the file
-    itself, but that warning is inside the thing that gets overwritten, which is why it is also
-    here.
-
-    **Three, not two, since 24 August 2026 12:29.** Release 8's exit criterion was rewritten
-    the same day, after Aidan ruled it closes on the app performing the one-tap logging rather
-    than on seven mornings happening. It was written before the paragraph above was, so the
-    count above is out of date. All three go when the file is regenerated.
+    rewrites it from the technical plan, and every hand edit in it goes when it runs. There are
+    hand edits in it now, and this note deliberately does not say how many: a count written here
+    goes stale the next time somebody edits that file, and the edit missing from a stale list is
+    the edit that gets erased. **Open the file and read every hand-written passage in it, decide
+    where each should live, then regenerate.** As of 24 August 2026 those are Aidan's rule about
+    what "finished" means — the section that overrides every exit criterion below it — and
+    releases 7 and 8's reworded exit criteria. Regenerating is allowed; losing them is not. A
+    warning to the same effect sits at the top of the file itself, but that warning is inside the
+    thing that gets overwritten, which is why it is also here.
