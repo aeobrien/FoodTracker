@@ -1,8 +1,8 @@
 {
-  "capture_finished_at_utc": "2026-08-24T10:44:02Z",
-  "capture_started_at_utc": "2026-08-24T10:44:00Z",
-  "captured_at_utc": "2026-08-24T10:44:00Z",
-  "captured_byte_estimate": 205265,
+  "capture_finished_at_utc": "2026-08-24T15:07:01Z",
+  "capture_started_at_utc": "2026-08-24T15:06:57Z",
+  "captured_at_utc": "2026-08-24T15:06:57Z",
+  "captured_byte_estimate": 206285,
   "captured_path_count": 29,
   "consistency_retry_count": 0,
   "excluded": [],
@@ -16,8 +16,8 @@
   "snapshot_blob_threshold_bytes": 94371840,
   "snapshot_consistency": "stable",
   "source_branch": "servicemap/foodtracker-card",
-  "source_head_oid": "36a38bd7cc4e077aef7ce559b72100a36bd12b82",
-  "source_index_sha256": "69a3a2f7280e7a203394cd506d68cbc415732542f17d67fcc4305fafcc53f95d",
+  "source_head_oid": "58c66e0a6d34711c1f4388c4a030b98469b02c24",
+  "source_index_sha256": "9f3c5b9c9311266f52bf0953a602c8affef4a1314041309e06780a14c1aeaa08",
   "source_path": "/Users/aidan/Dev/FoodTracker",
   "upstream_observed": null
 }

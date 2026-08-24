@@ -172,3 +172,15 @@ cd ios && pod install --repo-update && cd ..
 8. **Don't add streak mechanics or guilt-inducing language** — every day is a blank slate. Missing days are normal, not failures.
 9. **Don't use locale-dependent date formatting for storage keys** — store dates as ISO 8601 or integer timestamps. Locale-dependent keys caused data integrity issues in the original app.
 10. **Don't embed food data in log entries** — always reference food_items by ID. Store a computed snapshot for historical accuracy, but the food reference enables correction propagation.
+
+11. **Don't regenerate `roadmap.md` without reading it first.** The planning project's
+    `downstream/roadmap.md` is a generated file — `bin/roadmap.py generate` in the `plan` skill
+    rewrites it from the technical plan, and every hand edit in it goes when it runs. There are
+    hand edits in it now, and this note deliberately does not say how many: a count written here
+    goes stale the next time somebody edits that file, and the edit missing from a stale list is
+    the edit that gets erased. **Open the file and read every hand-written passage in it, decide
+    where each should live, then regenerate.** As of 24 August 2026 those are Aidan's rule about
+    what "finished" means — the section that overrides every exit criterion below it — and
+    releases 7 and 8's reworded exit criteria. Regenerating is allowed; losing them is not. A
+    warning to the same effect sits at the top of the file itself, but that warning is inside the
+    thing that gets overwritten, which is why it is also here.
