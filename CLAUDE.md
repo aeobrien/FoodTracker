@@ -1,5 +1,22 @@
 # FoodTracker — Project Conventions
 
+## What "done" means here
+
+**Aidan, 23 August 2026, asked whether a release was finished:**
+
+> "When you say 'tested', not by me. If it's not tested and approved by me,
+> it's not done."
+
+A passing suite is evidence, not the verdict. Nothing here is done until he has
+tested it and said so. When you finish building, the honest words are "built and
+tested, waiting on Aidan" — never "done", "complete" or "finished". Put what he
+has to do in front of him with `/walkthrough`, at the point where he would really
+use the thing, and leave it open until he has been through it.
+
+It applies backwards: anything reading as finished on the strength of a passing
+suite alone is waiting on him, whatever it says. The same rule is in
+`~/Dev/Mantel/ledger/PROJECT.md` and in the releases roadmap.
+
 ## Overview
 
 FoodTracker is a frictionless, personal calorie and macro tracker built on a fork of OpenNutriTracker (Flutter). It adds exercise-adjusted allowances (via Apple Health), LLM-assisted food label capture and recipe creation (via Claude API), quick-add estimates, and ADHD-friendly design throughout. Local-first, single-user, no subscriptions.
@@ -155,3 +172,18 @@ cd ios && pod install --repo-update && cd ..
 8. **Don't add streak mechanics or guilt-inducing language** — every day is a blank slate. Missing days are normal, not failures.
 9. **Don't use locale-dependent date formatting for storage keys** — store dates as ISO 8601 or integer timestamps. Locale-dependent keys caused data integrity issues in the original app.
 10. **Don't embed food data in log entries** — always reference food_items by ID. Store a computed snapshot for historical accuracy, but the food reference enables correction propagation.
+
+11. **Don't regenerate `roadmap.md` without reading it first.** The planning project's
+    `downstream/roadmap.md` is a generated file — `bin/roadmap.py generate` in the `plan` skill
+    rewrites it from the technical plan. It has been hand-edited twice since it was generated,
+    and both edits would be lost: Aidan's rule about what "finished" means (23 August 2026, the
+    section that overrides every exit criterion below it) and release 7's reworded exit criterion
+    (24 August 2026). Regenerating is allowed; losing those two is not. Read them, decide where
+    they should live, then regenerate. A warning to the same effect sits at the top of the file
+    itself, but that warning is inside the thing that gets overwritten, which is why it is also
+    here.
+
+    **Three, not two, since 24 August 2026 12:29.** Release 8's exit criterion was rewritten
+    the same day, after Aidan ruled it closes on the app performing the one-tap logging rather
+    than on seven mornings happening. It was written before the paragraph above was, so the
+    count above is out of date. All three go when the file is regenerated.
