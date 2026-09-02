@@ -60,11 +60,11 @@ All deliverables complete.
 | 2.1.2 | Neutral overage display | Done | Quick Win | Verified neutral styling; covered by dashboard widget tests. Completed in phase-blitz integration. |
 | 2.1.3 | Weekly context line | Done | Quick Win | |
 | 2.1.4 | Macro progress bars | Done | Deep Focus | `MacroNutrimentWidget` |
-| 2.1.5 | Meal-grouped log | Done | Deep Focus | `MealGrouping.groupByMeal` + display order; unit + widget tests. Completed in phase-blitz integration. |
+| 2.1.5 | Meal-grouped log | Done — on the release branch 2026-09-02 | Deep Focus | The four meal strips on Home now come from one shared list of the day's meals instead of four copies of the same block. Nobody sees any difference; that is the intent. Written in June on a branch that never reached the release line, and redone by hand rather than applied — the June version predates the planned-meal ghost cards and would have dropped all six of Dinner's extra wires in silence. On the release branch as `83e3722`. Proved by stripping those six back out: the planned meal never reaches the screen and the tap-to-confirm callback comes back null. |
 | 2.1.6 | Today's date display | Done | Quick Win | |
 | 2.1.7 | Calendar dot cleanup | Done | Quick Win | Completed 2026-04-10. Added deleteDayIfEmpty calls to deleteIntakeItem and deleteUserActivityItem. Floating-point tolerance added. |
 | 2.1.8 | Home page delete confirmation | Done | Quick Win | Already existed (DeleteDialog on long-press). Drag-down-to-delete replaced by swipe in 3.1.7. |
-| 2.1.9 | Instant load from DailyStats | Done | Deep Focus | LoadItemsEvent reads cached DailyStats row as authoritative; falls back to compute only when no row. Completed in phase-blitz integration. |
+| 2.1.9 | Opening the day is quicker, without freezing the ring | Done — on the release branch 2026-09-02 | Deep Focus | Opening Home asked Apple Health for today's exercise, then asked again while working out the day's target. It now passes on the figure it already has, so the watch is asked once. On the release branch as `892c5d8`. **The June version of this row was not applied and should not be.** It read the target off the day's saved row and skipped the calculation — but only hand-logged exercise ever writes to that row, so a walk recorded by the watch would have stopped moving the ring. The earlier wording of this row ("reads cached DailyStats row as authoritative") described that rejected design and claimed it Done; it never reached the release line. Proved by counting the calls: with the second trip back, the test reads 2 where it wants 1. |
 
 ---
 
