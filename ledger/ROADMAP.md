@@ -128,6 +128,7 @@ All deliverables complete.
 | 5.1.2 | Quick-add log entry (type=quickAdd) | Done | Deep Focus | Verified already implemented during phase-blitz audit; covered by intake repository tests. |
 | 5.1.3 | Visual distinction in log | Done | Quick Win | Bolt badge icon on quick-add entries; covered by intake card widget test. Confirmed in phase-blitz integration (quickadd). |
 | 5.1.4 | Prominent Quick Add button on home | Done | Quick Win | Quick-add entry point added to `main_screen`. Completed in phase-blitz integration (quickadd). |
+| 5.1.5 | A half-typed entry survives the app closing | Done — 2026-09-02 | Deep Focus | If something took him out of the app mid-entry, the screen came back blank. The draft is now stored on the way out and restored on the way in; a saved entry clears it. On the release branch as `10829a7`. Proved by two runs of the app over one database: with the screen wiring taken out the second run fails on the first field. |
 
 ---
 
@@ -143,13 +144,14 @@ All deliverables complete.
 | # | Task | Status | Effort | Notes |
 |---|------|--------|--------|-------|
 | 6.1.1 | Claude API client | Done | Deep Focus | User's API key from settings |
-| 6.1.2 | Photo capture flow | Done | Deep Focus | Camera + gallery capture wired through `label_scan_screen`/bloc; gallery source test passes. Completed in phase-blitz integration (llmlabel). |
+| 6.1.2 | Photo capture flow | Done — on the release branch 2026-09-02 | Deep Focus | Camera plus a "Choose from library" way in. Written in June on a branch that never reached the release line; brought across on 2026-09-02 as `9b52c63` and checked by driving the real screen — with the old screen back, the library button is not there. |
 | 6.1.3 | LLM extraction + JSON parsing | Done | Deep Focus | |
 | 6.1.4 | Client-side Atwater validation | Done | Deep Focus | |
 | 6.1.5 | Confirmation UI (editable form) | Done | Deep Focus | |
 | 6.1.6 | Save as FoodItem | Done | Quick Win | Extraction result saved as reusable FoodItem. Completed in phase-blitz integration (llmlabel). |
-| 6.1.7 | "Not found" flow integration | Done | Deep Focus | Bloc emits not-found state when a label can't be parsed; covered by bloc test. Completed in phase-blitz integration (llmlabel). |
-| 6.1.8 | Offline fallback (queue for processing) | Done | Deep Focus | `PendingLabelScanQueue` queues photos when offline and processes on reconnect; bloc + queue tests pass. Completed in phase-blitz integration (llmlabel). |
+| 6.1.9 | Re-photographing a packet updates it rather than duplicating | Done — 2026-09-02 | Quick Win | A scanned food used to get a fresh random code every time, so the same jar photographed twice became two entries. Now keyed on name and brand with case and spacing flattened. Crossed over as `9b52c63`; with the old identity back, that one claim fails and the other four still pass. |
+| 6.1.7 | "Not found" flow integration | Done — on the release branch 2026-09-02 | Deep Focus | "There is no nutrition label in this photo" is now a different answer from "I could not reach the service", each with the offer that fits it. Same June origin, same 2026-09-02 crossing (`9b52c63`); checked on the screen, not only in the bloc. |
+| 6.1.8 | Offline fallback (queue for processing) | Done — on the release branch 2026-09-02 | Deep Focus | A photo taken with no signal is kept on disk and read later, with a Try now button. Same June origin, same 2026-09-02 crossing (`9b52c63`). The screen half is checked on the screen; the last steps of reading the photo back run on the real clock instead, because a widget test's hand-driven clock never finishes them — said plainly in the test rather than hidden. |
 
 ---
 
