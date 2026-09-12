@@ -1,0 +1,38 @@
+[
+  {
+    "add": "",
+    "dropped": [],
+    "kept": [
+      {
+        "effort": "build",
+        "label": "Export nutrition data",
+        "surface": "file",
+        "what": "Provide a JSON export of foods, recipes, logs, and cached daily stats for backup or downstream analysis.",
+        "why": "the technical brief explicitly calls for a data export module and JSON portability"
+      },
+      {
+        "effort": "build",
+        "label": "Pull recipe nutrition",
+        "surface": "http",
+        "what": "Fetch recipes and nutrition data from Mealie and cache them locally for offline logging.",
+        "why": "the ledger notes say FoodTracker pulls recipes and nutrition from Mealie's API"
+      },
+      {
+        "effort": "build",
+        "label": "Scan packaged foods",
+        "surface": "http",
+        "what": "Look up barcode-scanned foods against external nutrition databases during logging.",
+        "why": "the technical brief names Open Food Facts as primary and FoodData Central as an optional fallback"
+      },
+      {
+        "effort": "build",
+        "label": "LLM food capture",
+        "surface": "http",
+        "what": "Send a photo or text description to an LLM service to extract structured nutrition data for missing foods or recipes.",
+        "why": "the docs specify LLM extraction and recipe-builder services returning structured nutrition JSON"
+      }
+    ],
+    "project": "FoodTracker",
+    "tier": 3
+  }
+]
