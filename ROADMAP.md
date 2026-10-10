@@ -1,5 +1,7 @@
 # FoodTracker Roadmap
 
+> **Historical (Stage 2 plan as of February 2026).** The checkboxes below are not maintained: the Drift database, DAOs, Today dashboard and their tests are built and passing (706 tests passing when this was logged). The live roadmap and status are in `ledger/ROADMAP.md`. (Banner added 2026-10-10.)
+
 ## Overview
 
 This roadmap covers the full development of FoodTracker, built on a fork of OpenNutriTracker.
