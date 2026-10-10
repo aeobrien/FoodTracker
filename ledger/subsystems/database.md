@@ -17,7 +17,7 @@ The data layer — migrated from Hive to drift (type-safe SQLite) in Phase 5. Pr
 
 ## Design Notes
 
-- Tables: food_items, recipes, recipe_ingredients, log_entries, daily_stats, config
+- Tables: food_items, log_entries, daily_stats, config, user_profile, user_activities, recipes, recipe_ingredients, outbox_items, label_captures, own_rows
 - FTS5 index on food_items.name for local search
 - Timestamps stored as UTC, day boundary applied in queries
 - Food items referenced by ID in log entries, with computed nutrition snapshot for historical accuracy
